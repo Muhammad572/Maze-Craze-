@@ -36,7 +36,7 @@ public class PathObject : MonoBehaviour
         // // 🔊 Play move sound ONCE per swipe
         if (AudioManager.instance != null)
                 // AudioManager.instance.PlaySound("End");
-                AudioManager.instance.PlayOneShot(AudioManager.instance.tilebreakSound,0.15f);
+                AudioManager.instance.PlayOneShot(AudioManager.instance.tilebreakSound,0.1f);
         //         AudioManager.instance.playMe();
     }
 
