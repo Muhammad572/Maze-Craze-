@@ -78,7 +78,7 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         // ❌ FIXED: Removed the call to ResetProgress() which was deleting the saved level.
-        ResetProgress();
+        // ResetProgress();
         if (levels == null || levels.Count == 0)
         {
             usingAutoPopulatedLevels = true;
