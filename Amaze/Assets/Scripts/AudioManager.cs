@@ -10,8 +10,11 @@ public class AudioManager : MonoBehaviour
     public bool mute = false;
 
     public AudioClip playerMoveSound;
-     public AudioClip tilebreakSound;
+    public AudioClip tilebreakSound;
     private AudioSource oneShotSource;
+
+    [Header("Reward Sounds")]
+    public AudioClip[] rewardClips; // assign your 2 (or more) reward tracks here
 
     private void Awake()
     {
@@ -109,4 +112,22 @@ public class AudioManager : MonoBehaviour
                 sound.source.mute = mute;
         }
     }
+    public void PlayRandomRewardSound()
+    {
+        if (rewardClips == null || rewardClips.Length == 0)
+        {
+            Debug.LogWarning("⚠️ No reward sounds assigned!");
+            return;
+        }
+
+        int index = UnityEngine.Random.Range(0, rewardClips.Length);
+        AudioClip clip = rewardClips[index];
+
+        if (clip != null)
+        {
+            oneShotSource.PlayOneShot(clip);
+            Debug.Log($"🎵 Playing reward sound: {clip.name}");
+        }
+    }
+
 }

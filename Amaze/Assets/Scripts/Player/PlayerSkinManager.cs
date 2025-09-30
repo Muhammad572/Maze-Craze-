@@ -70,9 +70,16 @@ public class PlayerSkinManager : MonoBehaviour
             {
                 RewardedAdManager.Instance.ShowRewardedAd(() =>
                 {
-                    UnlockSkin(index);
-                    ApplySkin(index);
-                    RefreshSkinUI(); // ✅ refresh all skin locks immediately
+                    Debug.Log("🎥 Ad finished callback fired!");
+                    RewardPanelManager.Instance.ShowReward(
+                        playerPrefabs[index].GetComponentInChildren<SpriteRenderer>().sprite,
+                        () =>
+                        {
+                            Debug.Log("🎁 Claim pressed, unlocking skin " + index);
+                            UnlockSkin(index);
+                            ApplySkin(index);
+                            RefreshSkinUI();
+                        });
                 });
             }
             else
@@ -87,7 +94,6 @@ public class PlayerSkinManager : MonoBehaviour
 
         ApplySkin(index);
     }
-
     
     private void RefreshSkinUI()
     {

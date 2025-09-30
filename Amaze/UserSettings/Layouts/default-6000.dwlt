@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1440
     height: 900
   m_ShowMode: 4
-  m_Title: Inspector
+  m_Title: Hierarchy
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 382}
   m_MaxSize: {x: 10000, y: 10000}
@@ -70,7 +70,7 @@ MonoBehaviour:
     x: 0
     y: 0
     width: 289.5
-    height: 627.5
+    height: 598
   m_MinSize: {x: 201, y: 226}
   m_MaxSize: {x: 4001, y: 4026}
   m_ActualView: {fileID: 16}
@@ -98,7 +98,7 @@ MonoBehaviour:
     x: 0
     y: 0
     width: 1046
-    height: 627.5
+    height: 598
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
@@ -120,9 +120,9 @@ MonoBehaviour:
   m_Position:
     serializedVersion: 2
     x: 0
-    y: 627.5
+    y: 598
     width: 1046
-    height: 216.5
+    height: 246
   m_MinSize: {x: 231, y: 276}
   m_MaxSize: {x: 10001, y: 10026}
   m_ActualView: {fileID: 17}
@@ -272,9 +272,9 @@ MonoBehaviour:
     x: 289.5
     y: 0
     width: 756.5
-    height: 627.5
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+    height: 598
+  m_MinSize: {x: 202, y: 226}
+  m_MaxSize: {x: 4002, y: 4026}
   m_ActualView: {fileID: 20}
   m_Panes:
   - {fileID: 15}
@@ -1137,7 +1137,7 @@ MonoBehaviour:
     x: 0
     y: 36
     width: 288.5
-    height: 601.5
+    height: 572
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1154,7 +1154,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 0a41fbff1c41fbff9ae9fcff4210ffff2416ffffd0db0100e62b0200
+      m_ExpandedIDs: ac3ff4ffbe3ff4ff30e8f5ff44e8f5ffd2f4f5ffe4f4f5ff569df7ff6a9df7ff48eaf7ff5aeaf7ff8c92f9ff949af9ffa69af9ff2843fbff3ab9fbff34bbfbffae6cfdffde11ffff0c16ffffaedf02003a0a0300c6a6030076411000fa591000d04e11001a4d1200ba641200
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1201,9 +1201,9 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 663.5
+    y: 634
     width: 1045
-    height: 190.5
+    height: 220
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1226,7 +1226,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/Player
+    - Assets/Sounds
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1236,16 +1236,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 82
   m_LastFolders:
-  - Assets/Scripts/Player
+  - Assets/Sounds
   m_LastFoldersGridSize: 82
   m_LastProjectPath: /Users/muhammad/Desktop/Maze-Craze-/Amaze
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 53.5}
-    m_SelectedIDs: f8150100
-    m_LastClickedID: 71160
-    m_ExpandedIDs: 0000000028030100cc170100
+    scrollPos: {x: 0, y: 109}
+    m_SelectedIDs: 36180100
+    m_LastClickedID: 71734
+    m_ExpandedIDs: 000000002c030100d21701009a270100
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1302,7 +1302,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 0
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c623000026b800006ebb0200120f010032da0200babb000024e3000070ae000000000000f247010060470100
     m_CreateAssetUtility:
       m_EndAction: {fileID: 0}
@@ -1337,9 +1337,9 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 564
-    width: 964
-    height: 290
+    y: 662
+    width: 1045
+    height: 192
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1424,7 +1424,7 @@ MonoBehaviour:
     x: 289.5
     y: 36
     width: 754.5
-    height: 601.5
+    height: 572
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1462,7 +1462,7 @@ MonoBehaviour:
     pluginStates:
     - '{}'
     - '{}'
-    scale: 18
+    scale: 17
     fitToScreenEnabled: 0
     rotationDegree: 0
     highlightSafeAreaEnabled: 0

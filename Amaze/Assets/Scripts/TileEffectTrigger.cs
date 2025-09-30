@@ -1,30 +1,3 @@
-// using UnityEngine;
-
-// public class TileEffectTrigger : MonoBehaviour
-// {
-//     public GameObject effectPrefab;
-
-//     private void OnTriggerEnter2D(Collider2D other)
-//     {
-//         print("Called Trigger holo");
-//         Debug.Log($"{gameObject.name} triggered by {other.name}");
-//         if (other.CompareTag("Player") && effectPrefab != null)
-//         {
-//             // Optional: use player move direction
-//             Vector2 moveDir = SwipeSlidePlayer.Instance.LastMoveDirection;
-//             float angle = Mathf.Atan2(moveDir.y, moveDir.x) * Mathf.Rad2Deg;
-//             Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-
-//             GameObject fx = Instantiate(effectPrefab, transform.position, rotation);
-
-//             // Force play & auto destroy
-//             var ps = fx.GetComponent<ParticleSystem>();
-//             if (ps != null) ps.Play();
-//             Destroy(fx, 2f);
-//         }
-//     }
-// }
-
 using UnityEngine;
 
 public class TileEffectTrigger : MonoBehaviour
