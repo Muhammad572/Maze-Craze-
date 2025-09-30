@@ -76,16 +76,35 @@ public class ThemeManager : MonoBehaviour
         {
             RewardedAdManager.Instance.ShowRewardedAd(() =>
             {
-                // 🎨 Use white sprite + button color
-                Sprite preview = themePreviewSprite;
-                Color themeColor = themeButtons[index].GetComponent<Image>().color;
-
-                RewardPanelManager.Instance.ShowReward(preview, () =>
+                UnityMainThread.Run(() =>
                 {
-                    UnlockTheme(index);
-                    SelectTheme(index);
-                }, themeColor); // pass color too
+                    if (RewardPanelManager.Instance != null)
+                    {
+                        // 🎨 Use white sprite + button color
+                        Sprite preview = themePreviewSprite;
+                        Color themeColor = themeButtons[index].GetComponent<Image>().color;
+
+                        RewardPanelManager.Instance.ShowReward(preview, () =>
+                        {
+                            UnlockTheme(index);
+                            SelectTheme(index);
+                        }, themeColor); // pass color too
+                    }
+                });
             });
+
+            // RewardedAdManager.Instance.ShowRewardedAd(() =>
+            // {
+            //     // 🎨 Use white sprite + button color
+            //     Sprite preview = themePreviewSprite;
+            //     Color themeColor = themeButtons[index].GetComponent<Image>().color;
+
+            //     RewardPanelManager.Instance.ShowReward(preview, () =>
+            //     {
+            //         UnlockTheme(index);
+            //         SelectTheme(index);
+            //     }, themeColor); // pass color too
+            // });
         }
         else
         {

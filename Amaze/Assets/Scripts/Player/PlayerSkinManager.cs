@@ -70,17 +70,37 @@ public class PlayerSkinManager : MonoBehaviour
             {
                 RewardedAdManager.Instance.ShowRewardedAd(() =>
                 {
-                    Debug.Log("🎥 Ad finished callback fired!");
-                    RewardPanelManager.Instance.ShowReward(
-                        playerPrefabs[index].GetComponentInChildren<SpriteRenderer>().sprite,
-                        () =>
+                    UnityMainThread.Run(() =>
+                    {
+                        if (RewardPanelManager.Instance != null)
                         {
-                            Debug.Log("🎁 Claim pressed, unlocking skin " + index);
-                            UnlockSkin(index);
-                            ApplySkin(index);
-                            RefreshSkinUI();
-                        });
+                            Debug.Log("🎥 Ad finished callback fired!");
+                            RewardPanelManager.Instance.ShowReward(
+                            playerPrefabs[index].GetComponentInChildren<SpriteRenderer>().sprite,
+                            () =>
+                            {
+                                Debug.Log("🎁 Claim pressed, unlocking skin " + index);
+                                UnlockSkin(index);
+                                ApplySkin(index);
+                                RefreshSkinUI();
+                            });
+                        }
+                    });
                 });
+
+                // RewardedAdManager.Instance.ShowRewardedAd(() =>
+                // {
+                //     Debug.Log("🎥 Ad finished callback fired!");
+                //     RewardPanelManager.Instance.ShowReward(
+                //         playerPrefabs[index].GetComponentInChildren<SpriteRenderer>().sprite,
+                //         () =>
+                //         {
+                //             Debug.Log("🎁 Claim pressed, unlocking skin " + index);
+                //             UnlockSkin(index);
+                //             ApplySkin(index);
+                //             RefreshSkinUI();
+                //         });
+                // });
             }
             else
             {

@@ -1,20 +1,24 @@
 using UnityEngine;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
+
+    [Header("General Sounds")]
     public Sound[] sounds;
     public bool mute = false;
 
+    [Header("Core Clips")]
     public AudioClip playerMoveSound;
     public AudioClip tilebreakSound;
-    private AudioSource oneShotSource;
 
     [Header("Reward Sounds")]
-    public AudioClip[] rewardClips; // assign your 2 (or more) reward tracks here
+    public AudioClip[] rewardClips; // assign reward tracks in Inspector
+
+    private AudioSource oneShotSource;   // ✅ pooled for short SFX only
+    private AudioSource musicSource;     // optional if you add music later
 
     private void Awake()
     {
@@ -29,8 +33,12 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
+        // One main pooled source
         oneShotSource = gameObject.AddComponent<AudioSource>();
+        oneShotSource.spatialBlend = 0f; // force 2D
+        oneShotSource.playOnAwake = false;
 
+        // Setup sound bank
         foreach (Sound s in sounds)
         {
             s.source = gameObject.AddComponent<AudioSource>();
@@ -41,11 +49,15 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    // --- Generic ---
     public void PlayOneShot(AudioClip clip, float volume = 1f)
     {
-        if (clip != null)
+        if (clip != null && !mute)
         {
-            oneShotSource.PlayOneShot(clip, volume);
+            oneShotSource.pitch = 1f;   // ✅ reset pitch each play
+            oneShotSource.volume = volume;
+            oneShotSource.spatialBlend = 0f;
+            oneShotSource.PlayOneShot(clip);
         }
     }
 
@@ -54,18 +66,48 @@ public class AudioManager : MonoBehaviour
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (s == null || s.source == null)
         {
-            Debug.LogWarning($"Sound '{name}' not found or AudioSource missing!");
+            Debug.LogWarning($"⚠️ Sound '{name}' not found!");
             return;
         }
-        s.source.Play();
+        if (!mute) s.source.Play();
     }
-    
-    // // ✅ Add this new public method to play the tile break sound
-    // public void PlayTileBreakSound()
-    // {
-    //     PlayOneShot(tilebreakSound);
-    // }
 
+    // --- Dedicated helpers ---
+    public void PlayMoveSound()
+    {
+        PlayOneShot(playerMoveSound, 0.7f);
+    }
+
+    public void PlayTileBreakSound(Vector3 pos)
+    {
+        PlayOneShot(tilebreakSound, 0.2f);
+    }
+
+    public void PlayRandomRewardSound()
+    {
+        if (rewardClips == null || rewardClips.Length == 0 || mute)
+        {
+            Debug.LogWarning("⚠️ No reward sounds assigned!");
+            return;
+        }
+
+        int index = UnityEngine.Random.Range(0, rewardClips.Length);
+        AudioClip clip = rewardClips[index];
+        PlayOneShot(clip, 1f);
+        Debug.Log($"🎵 Playing reward sound: {clip.name}");
+    }
+
+    // --- Mute toggle ---
+    public void ToggleMute()
+    {
+        mute = !mute;
+        foreach (Sound sound in sounds)
+        {
+            if (sound.source != null)
+                sound.source.mute = mute;
+        }
+        oneShotSource.mute = mute;
+    }
 
     public void PlaySoundWithCallback(string name, Action onComplete)
     {
@@ -79,7 +121,7 @@ public class AudioManager : MonoBehaviour
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (s == null || s.source == null || s.clip == null)
         {
-            Debug.LogWarning($"Sound '{name}' missing or invalid!");
+            Debug.LogWarning($"⚠️ Sound '{name}' missing or invalid!");
             onComplete?.Invoke();
             yield break;
         }
@@ -95,39 +137,18 @@ public class AudioManager : MonoBehaviour
         yield return new WaitForSeconds(s.clip.length);
         onComplete?.Invoke();
     }
-
-
-    private IEnumerator WaitAndRun(float delay, Action onComplete)
+    public void ResetAllSounds()
     {
-        yield return new WaitForSeconds(delay);
-        onComplete?.Invoke();
-    }
-
-    public void ToggleMute()
-    {
-        mute = !mute;
-        foreach (Sound sound in sounds)
+        foreach (Sound s in sounds)
         {
-            if (sound.source != null)
-                sound.source.mute = mute;
+            if (s.source != null)
+            {
+                s.source.volume = s.volume;
+                s.source.pitch = s.pitch;
+                s.source.loop = s.loop;
+            }
         }
+        oneShotSource.pitch = 1f;
+        oneShotSource.volume = 1f;
     }
-    public void PlayRandomRewardSound()
-    {
-        if (rewardClips == null || rewardClips.Length == 0)
-        {
-            Debug.LogWarning("⚠️ No reward sounds assigned!");
-            return;
-        }
-
-        int index = UnityEngine.Random.Range(0, rewardClips.Length);
-        AudioClip clip = rewardClips[index];
-
-        if (clip != null)
-        {
-            oneShotSource.PlayOneShot(clip);
-            Debug.Log($"🎵 Playing reward sound: {clip.name}");
-        }
-    }
-
 }

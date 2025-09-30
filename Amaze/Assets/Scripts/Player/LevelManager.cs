@@ -63,6 +63,7 @@ public class LevelManager : MonoBehaviour
     // --- Unity Lifecycle Methods ---
     void Awake()
     {
+        UnityMainThread.Init();
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         if (instance == null) instance = this;
         else if (instance != this) Destroy(gameObject);
@@ -269,6 +270,9 @@ public class LevelManager : MonoBehaviour
             po.RegisterWithLevelManager();
         }
 
+        // --- 🔊 Reset audio each level ---
+        AudioManager.instance?.ResetAllSounds();
+
         if (_remainingPathObjectsInCurrentLevel == 0)
             LevelCompleted();
     }
@@ -310,34 +314,80 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    private void ActivateNextLevel()
+private void ActivateNextLevel()
+{
+    int nextIndex = currentLevelIndex + 1;
+    if (nextIndex >= levels.Count)
+        nextIndex = 0;
+
+    // --- 1. Universal Internet Check ---
+    if (Interstitial.instance != null && !Interstitial.instance.IsInternetAvailable())
     {
-        int nextIndex = currentLevelIndex + 1;
-        if (nextIndex >= levels.Count)
-            nextIndex = 0;
+        Debug.Log("⚠️ Universal Check: No internet connection detected → REPLAY current level (Preventing Progression)");
+        // 🔑 We do NOT update the saved index.
+        ActivateLevel(currentLevelIndex); 
+        return; // Stop here, replay the current level
+    }
 
-        // ✅ Save progress
-        PlayerPrefs.SetInt("LastLevelIndex", nextIndex);
-        PlayerPrefs.Save();
+    // Internet is available, now proceed with the ad logic...
 
-        // ✅ Count levels for ads
-        levelsSinceLastAd++;
-        if (levelsSinceLastAd >= 2)
+    // ✅ Count levels for ads
+    levelsSinceLastAd++;
+    
+    // 👇 Default is to proceed normally unless an ad is shown or an ad failure occurs
+    bool proceedNormally = true;
+
+    if (levelsSinceLastAd >= 2)
+    {
+        levelsSinceLastAd = 0;
+        
+        if (Interstitial.instance != null)
         {
-            levelsSinceLastAd = 0; // reset
-            if (Interstitial.instance != null)
+            // Note: Since we passed the universal internet check, this branch handles only 'Ad not loaded' cases.
+            if (Interstitial.instance.IsAdAvailable())
             {
-                Interstitial.instance.ShowInterstitialAd();
+                // Ad is available, show it. Progression happens in the callback.
+                Interstitial.instance.ShowInterstitialAd(() =>
+                {
+                    Debug.Log("✅ Ad closed, continue to next level");
+                    // 🔑 ONLY save and activate next level ON SUCCESSFUL AD CLOSE
+                    PlayerPrefs.SetInt("LastLevelIndex", nextIndex);
+                    PlayerPrefs.Save();
+                    ActivateLevel(nextIndex);
+                });
+                return; // 🛑 Stop here and wait for ad callback
             }
             else
             {
-                Debug.LogWarning("Interstitial instance not found.");
+                Debug.Log("⚠️ Ad required but not available (loaded) → REPLAY current level");
+                proceedNormally = false; // Replay current level
             }
         }
-
-        ActivateLevel(nextIndex);
+        else
+        {
+            Debug.LogWarning("⚠️ Interstitial instance not found → REPLAY current level");
+            proceedNormally = false; // Replay current level
+        }
     }
 
+    // This block runs if:
+    // 1. No ad was required (levelsSinceLastAd < 2 before increment).
+    // 2. An ad was required but failed/was skipped (proceedNormally == false).
+    
+    if (proceedNormally)
+    {
+        // 🔑 Save and activate next level
+        PlayerPrefs.SetInt("LastLevelIndex", nextIndex);
+        PlayerPrefs.Save();
+        ActivateLevel(nextIndex);
+    }
+    else
+    {
+        // 🔑 The level should be repeated due to ad failure
+        // We do NOT update the saved index, so the player repeats the level.
+        ActivateLevel(currentLevelIndex); 
+    }
+}
     private IEnumerator RewindPlayerPathAndZoom(SwipeSlidePlayer playerScript)
     {
         rewindRoutine = StartCoroutine(RunRewind(playerScript));

@@ -3,8 +3,7 @@ using UnityEngine;
 public class PathObject : MonoBehaviour
 {
     private bool wasBroken = false;
-    public GameObject breakEffectPrefab; // Assign in Inspector
-    
+    public GameObject breakEffectPrefab; // assign in Inspector
 
     public void RegisterWithLevelManager()
     {
@@ -13,34 +12,28 @@ public class PathObject : MonoBehaviour
 
     public void Break()
     {
-        if (wasBroken) return; // 🚫 Already broken
-
+        if (wasBroken) return; // 🚫 already broken
         wasBroken = true;
+
         gameObject.SetActive(false);
 
-
+        // Spawn particle effect with swipe rotation
         if (breakEffectPrefab != null)
         {
             Vector2 moveDir = SwipeSlidePlayer.Instance.LastMoveDirection;
-
             float angle = Mathf.Atan2(moveDir.y, moveDir.x) * Mathf.Rad2Deg;
             Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-
             Instantiate(breakEffectPrefab, transform.position, rotation);
         }
 
+        // Deregister
         if (LevelManager.instance != null)
-        {
             LevelManager.instance.DeregisterPathObject(this);
-        }
-        // // 🔊 Play move sound ONCE per swipe
+
+        // 🔊 Play tile break sound via AudioManager
         if (AudioManager.instance != null)
-                // AudioManager.instance.PlaySound("End");
-                AudioManager.instance.PlayOneShot(AudioManager.instance.tilebreakSound,0.1f);
-        //         AudioManager.instance.playMe();
+            AudioManager.instance.PlayTileBreakSound(transform.position);
     }
-
-
 
     private void OnDisable()
     {
@@ -56,5 +49,4 @@ public class PathObject : MonoBehaviour
         wasBroken = false;
         gameObject.SetActive(true);
     }
-
 }
