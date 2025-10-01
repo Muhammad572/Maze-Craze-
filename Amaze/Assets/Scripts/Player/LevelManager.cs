@@ -314,80 +314,171 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-private void ActivateNextLevel()
-{
-    int nextIndex = currentLevelIndex + 1;
-    if (nextIndex >= levels.Count)
-        nextIndex = 0;
+    // private void ActivateNextLevel()
+    // {
+    //     int nextIndex = currentLevelIndex + 1;
+    //     if (nextIndex >= levels.Count)
+    //         nextIndex = 0;
 
-    // --- 1. Universal Internet Check ---
-    if (Interstitial.instance != null && !Interstitial.instance.IsInternetAvailable())
+    //     // --- 1. Universal Internet Check ---
+    //     if (Interstitial.instance != null && !Interstitial.instance.IsInternetAvailable())
+    //     {
+    //         Debug.Log("⚠️ Universal Check: No internet connection detected → REPLAY current level (Preventing Progression)");
+    //         // 🔑 We do NOT update the saved index.
+    //         ActivateLevel(currentLevelIndex); 
+    //         return; // Stop here, replay the current level
+    //     }
+
+    //     // Internet is available, now proceed with the ad logic...
+
+    //     // ✅ Count levels for ads
+    //     levelsSinceLastAd++;
+
+    //     // 👇 Default is to proceed normally unless an ad is shown or an ad failure occurs
+    //     bool proceedNormally = true;
+
+    //     if (levelsSinceLastAd >= 2)
+    //     {
+    //         levelsSinceLastAd = 0;
+
+    //         if (Interstitial.instance != null)
+    //         {
+    //             // Note: Since we passed the universal internet check, this branch handles only 'Ad not loaded' cases.
+    //             if (Interstitial.instance.IsAdAvailable())
+    //             {
+    //                 // Ad is available, show it. Progression happens in the callback.
+    //                 Interstitial.instance.ShowInterstitialAd(() =>
+    //                 {
+    //                     Debug.Log("✅ Ad closed, continue to next level");
+    //                     // 🔑 ONLY save and activate next level ON SUCCESSFUL AD CLOSE
+    //                     PlayerPrefs.SetInt("LastLevelIndex", nextIndex);
+    //                     PlayerPrefs.Save();
+    //                     ActivateLevel(nextIndex);
+    //                 });
+    //                 return; // 🛑 Stop here and wait for ad callback
+    //             }
+    //             else
+    //             {
+    //                 Debug.Log("⚠️ Ad required but not available (loaded) → REPLAY current level");
+    //                 proceedNormally = false; // Replay current level
+    //             }
+    //         }
+    //         else
+    //         {
+    //             Debug.LogWarning("⚠️ Interstitial instance not found → REPLAY current level");
+    //             proceedNormally = false; // Replay current level
+    //         }
+    //     }
+
+    //     // This block runs if:
+    //     // 1. No ad was required (levelsSinceLastAd < 2 before increment).
+    //     // 2. An ad was required but failed/was skipped (proceedNormally == false).
+
+    //     if (proceedNormally)
+    //     {
+    //         // 🔑 Save and activate next level
+    //         PlayerPrefs.SetInt("LastLevelIndex", nextIndex);
+    //         PlayerPrefs.Save();
+    //         ActivateLevel(nextIndex);
+    //     }
+    //     else
+    //     {
+    //         // 🔑 The level should be repeated due to ad failure
+    //         // We do NOT update the saved index, so the player repeats the level.
+    //         ActivateLevel(currentLevelIndex); 
+    //     }
+    // }
+
+    private void ActivateNextLevel()
     {
-        Debug.Log("⚠️ Universal Check: No internet connection detected → REPLAY current level (Preventing Progression)");
-        // 🔑 We do NOT update the saved index.
-        ActivateLevel(currentLevelIndex); 
-        return; // Stop here, replay the current level
-    }
+        int nextIndex = currentLevelIndex + 1;
+        if (nextIndex >= levels.Count)
+            nextIndex = 0;
 
-    // Internet is available, now proceed with the ad logic...
-
-    // ✅ Count levels for ads
-    levelsSinceLastAd++;
-    
-    // 👇 Default is to proceed normally unless an ad is shown or an ad failure occurs
-    bool proceedNormally = true;
-
-    if (levelsSinceLastAd >= 2)
-    {
-        levelsSinceLastAd = 0;
-        
-        if (Interstitial.instance != null)
+        // --- 1. Universal Internet Check ---
+        if (Interstitial.instance != null && !Interstitial.instance.IsInternetAvailable())
         {
-            // Note: Since we passed the universal internet check, this branch handles only 'Ad not loaded' cases.
-            if (Interstitial.instance.IsAdAvailable())
+            Debug.Log("⚠️ Universal Check: No internet connection detected → REPLAY current level (Preventing Progression)");
+            
+            // 📢 SHOW TOAST MESSAGE HERE 
+            if (NotificationManager.instance != null)
             {
-                // Ad is available, show it. Progression happens in the callback.
-                Interstitial.instance.ShowInterstitialAd(() =>
+                NotificationManager.instance.ShowToast("No internet connection. Please check your network to unlock new levels.");
+            }
+
+            // 🔑 We do NOT update the saved index.
+            ActivateLevel(currentLevelIndex); 
+            return; // Stop here, replay the current level
+        }
+
+        // Internet is available, now proceed with the ad logic...
+
+        // ✅ Count levels for ads
+        levelsSinceLastAd++;
+        
+        // 👇 Default is to proceed normally unless an ad is shown or an ad failure occurs
+        bool proceedNormally = true;
+
+        if (levelsSinceLastAd >= 2)
+        {
+            levelsSinceLastAd = 0;
+            
+            if (Interstitial.instance != null)
+            {
+                // Note: Since we passed the universal internet check, this branch handles only 'Ad not loaded' cases.
+                if (Interstitial.instance.IsAdAvailable())
                 {
-                    Debug.Log("✅ Ad closed, continue to next level");
-                    // 🔑 ONLY save and activate next level ON SUCCESSFUL AD CLOSE
-                    PlayerPrefs.SetInt("LastLevelIndex", nextIndex);
-                    PlayerPrefs.Save();
-                    ActivateLevel(nextIndex);
-                });
-                return; // 🛑 Stop here and wait for ad callback
+                    // Ad is available, show it. Progression happens in the callback.
+                    Interstitial.instance.ShowInterstitialAd(() =>
+                    {
+                        Debug.Log("✅ Ad closed, continue to next level");
+                        // 🔑 ONLY save and activate next level ON SUCCESSFUL AD CLOSE
+                        PlayerPrefs.SetInt("LastLevelIndex", nextIndex);
+                        PlayerPrefs.Save();
+                        ActivateLevel(nextIndex);
+                    });
+                    return; // 🛑 Stop here and wait for ad callback
+                }
+                else
+                {
+                    Debug.Log("⚠️ Ad required but not available (loaded) → REPLAY current level");
+                    
+                    // 📢 SHOW TOAST MESSAGE HERE for Ad failure (optional)
+                    if (NotificationManager.instance != null)
+                    {
+                        NotificationManager.instance.ShowToast("Ad not ready. Replaying current level.");
+                    }
+
+                    proceedNormally = false; // Replay current level
+                }
             }
             else
             {
-                Debug.Log("⚠️ Ad required but not available (loaded) → REPLAY current level");
+                Debug.LogWarning("⚠️ Interstitial instance not found → REPLAY current level");
                 proceedNormally = false; // Replay current level
             }
         }
+
+        // This block runs if:
+        // 1. No ad was required (levelsSinceLastAd < 2 before increment).
+        // 2. An ad was required but failed/was skipped (proceedNormally == false).
+        
+        if (proceedNormally)
+        {
+            // 🔑 Save and activate next level
+            PlayerPrefs.SetInt("LastLevelIndex", nextIndex);
+            PlayerPrefs.Save();
+            ActivateLevel(nextIndex);
+        }
         else
         {
-            Debug.LogWarning("⚠️ Interstitial instance not found → REPLAY current level");
-            proceedNormally = false; // Replay current level
+            // 🔑 The level should be repeated due to ad failure
+            // We do NOT update the saved index, so the player repeats the level.
+            ActivateLevel(currentLevelIndex); 
         }
     }
 
-    // This block runs if:
-    // 1. No ad was required (levelsSinceLastAd < 2 before increment).
-    // 2. An ad was required but failed/was skipped (proceedNormally == false).
-    
-    if (proceedNormally)
-    {
-        // 🔑 Save and activate next level
-        PlayerPrefs.SetInt("LastLevelIndex", nextIndex);
-        PlayerPrefs.Save();
-        ActivateLevel(nextIndex);
-    }
-    else
-    {
-        // 🔑 The level should be repeated due to ad failure
-        // We do NOT update the saved index, so the player repeats the level.
-        ActivateLevel(currentLevelIndex); 
-    }
-}
+
     private IEnumerator RewindPlayerPathAndZoom(SwipeSlidePlayer playerScript)
     {
         rewindRoutine = StartCoroutine(RunRewind(playerScript));

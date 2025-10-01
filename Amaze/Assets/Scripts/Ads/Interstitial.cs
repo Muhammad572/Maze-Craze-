@@ -11,6 +11,7 @@ public class Interstitial : MonoBehaviour
     private string _adUnitId = "ca-app-pub-3940256099942544/1033173712"; // test
 #elif UNITY_IPHONE
     private string _adUnitId = "ca-app-pub-3940256099942544/4411468910"; // test
+    // private string _adUnitId = "ca-app-pub-8653293678103388/9567963590"; // Orignal
 #else
     private string _adUnitId = "unused";
 #endif
