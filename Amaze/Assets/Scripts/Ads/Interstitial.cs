@@ -8,10 +8,11 @@ public class Interstitial : MonoBehaviour
     public static Interstitial instance;
 
 #if UNITY_ANDROID
-    private string _adUnitId = "ca-app-pub-3940256099942544/1033173712"; // test
+    // private string _adUnitId = "ca-app-pub-3940256099942544/1033173712"; // test
+    private string _adUnitId = "ca-app-pub-8653293678103388/9592848476"; // Orignal
 #elif UNITY_IPHONE
-    private string _adUnitId = "ca-app-pub-3940256099942544/4411468910"; // test
-    // private string _adUnitId = "ca-app-pub-8653293678103388/9567963590"; // Orignal
+    // private string _adUnitId = "ca-app-pub-3940256099942544/4411468910"; // test
+    private string _adUnitId = "ca-app-pub-8653293678103388/9567963590"; // Orignal
 #else
     private string _adUnitId = "unused";
 #endif

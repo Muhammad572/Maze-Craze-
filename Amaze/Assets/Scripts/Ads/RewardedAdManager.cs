@@ -26,10 +26,11 @@ public class RewardedAdManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
 #if UNITY_ANDROID
-                _adUnitId = "ca-app-pub-3940256099942544/5224354917"; // ✅ Test ID
+                // _adUnitId = "ca-app-pub-3940256099942544/5224354917"; // ✅ Test ID
+                _adUnitId = "ca-app-pub-8653293678103388/4056902023"; // ✅ Orignal ID
         #elif UNITY_IPHONE
-                _adUnitId = "ca-app-pub-3940256099942544/1712485313"; // ✅ Test ID
-                // _adUnitId = "ca-app-pub-8653293678103388/8251012495"; // ✅ Orignal ID
+                // _adUnitId = "ca-app-pub-3940256099942544/1712485313"; // ✅ Test ID
+                _adUnitId = "ca-app-pub-8653293678103388/8251012495"; // ✅ Orignal ID
 #else
                 _adUnitId = null;
 #endif
